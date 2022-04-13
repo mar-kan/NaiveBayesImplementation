@@ -32,7 +32,7 @@ metrics. Finally, a graph is printed for each dataset, including the metrics of 
 - Plot: plots a scatter graph using the abovementioned library.
 - Preprocess: preprocesses a string
 - Utils: implements various general functions used in the proogram.
-- WordList: implements a hashmap where the words and the number of their occurences are stored.
+- WordList: implements a hashmap where the words and the number of their occurrences are stored.
 ----------------------------------------
 
 [1] Andrew L. Maas, Raymond E. Daly, Peter T. Pham, Dan Huang, Andrew Y. Ng, and Christopher Potts. 2011. 
