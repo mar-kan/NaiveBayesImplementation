@@ -7,7 +7,6 @@
 
 class NaiveBayes {
 
-    WordList * allWords;
     WordList * posWords;
     WordList * negWords;
     

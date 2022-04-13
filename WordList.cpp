@@ -44,6 +44,7 @@ void WordList::changeValue(const string& key)
             pair<int, string> pair = *it;
             words->erase(it);
             this->add(pair.first+1, pair.second);
+            break;
         }
     }
 }

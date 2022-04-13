@@ -5,20 +5,22 @@ int main() {
     cout<<endl<<"Enter number of repetitions"<<endl;
     int repetitions = Utils::convertToInt(Utils::inputString());
 
-    auto * trainMetrics = new Metrics(repetitions);
-    auto * testMetrics = new Metrics(repetitions);
-    auto * trainSizes = new vector<double>(repetitions);
+    auto * trainMetrics = new Metrics(repetitions);        // stores train metrics of every repetition
+    auto * testMetrics = new Metrics(repetitions);         // stores test metrics of every repetition
+    auto * trainSizes = new vector<double>(repetitions);     // stores train sizes of every repetition
 
     for(int i=0;i<repetitions;i++)
     {
         cout<<"Enter training size (maximum 12500)"<<endl;
         int size = Utils::convertToInt(Utils::inputString());
-        auto * nb = new NaiveBayes(0.02, size*6, 5, size);
 
+        auto * nb = new NaiveBayes(0.02, size*6, 5, size);
         trainSizes->at(repetitions-1)=size;
+
         if (repetitions != 1)
             cout << "-----Iteration "<<i+1<<"-----"<<endl;
 
+        /** training and evaluating training set **/
         nb->train();
         nb->evaluate("train", "positive");
         nb->evaluate("train", "negative");
@@ -26,31 +28,41 @@ int main() {
 
         nb->resetValues();
 
+        /** evaluating test set **/
         nb->evaluate("test", "positive");
         nb->evaluate("test", "negative");
         testMetrics->calculateAllMetrics(nb, i);
 
-        delete nb;
-
+        /** printing metrics for both sets **/
         cout<<endl<<"Evaluation metrics of the training dataset"<<endl;
-        trainMetrics->print(repetitions-1);
+        trainMetrics->print(i);
         cout<<endl<<"Evaluation metrics of the test dataset"<<endl;
-        testMetrics->print(repetitions-1);
+        testMetrics->print(i);
+
+        delete nb;
     }
 
-    auto * plot = new Plot();
-    Plot::plot(trainSizes, trainMetrics->getAccuracy());
-    Plot::plot(trainSizes, trainMetrics->getPrecision());
-    Plot::plot(trainSizes, trainMetrics->getRecall());
-    Plot::plot(trainSizes, trainMetrics->getF1());
+    if (repetitions > 1)
+    {
+        /** plotting the metrics for all the repetitions **/
+        Plot::plot(trainSizes, trainMetrics->getAccuracy(), "training", "Accuracy");
+        Plot::plot(trainSizes, trainMetrics->getPrecision(), "training", "Precision");
+        Plot::plot(trainSizes, trainMetrics->getRecall(), "training", "Recall");
+        Plot::plot(trainSizes, trainMetrics->getF1(), "training", "F1 Score");
 
-    Plot::plot(trainSizes, testMetrics->getAccuracy());
-    Plot::plot(trainSizes, testMetrics->getPrecision());
-    Plot::plot(trainSizes, testMetrics->getRecall());
-    Plot::plot(trainSizes, testMetrics->getF1());
+        Plot::plot(trainSizes, trainMetrics->getAccuracy(), "test", "Accuracy");
+        Plot::plot(trainSizes, trainMetrics->getPrecision(), "test", "Precision");
+        Plot::plot(trainSizes, trainMetrics->getRecall(), "test", "Recall");
+        Plot::plot(trainSizes, trainMetrics->getF1(), "test", "F1 Score");
+    }
+    else
+    {
+        /** plotting a graph for its set containing all metrics **/
+        Plot::plotAll(trainSizes, trainMetrics->getAccuracy(), trainMetrics->getPrecision(), trainMetrics->getRecall(), trainMetrics->getF1(), "training");
+        Plot::plotAll(trainSizes, testMetrics->getAccuracy(), testMetrics->getPrecision(), testMetrics->getRecall(), testMetrics->getF1(), "test");
+    }
 
     delete trainMetrics;
     delete testMetrics;
     delete trainSizes;
-    delete plot;
 }

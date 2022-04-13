@@ -1,22 +1,24 @@
 #include "Utils.h"
 
 
-void Utils::errorExit(const string& msg)
+void Utils::errorExit(const string& msg)    // writes error message and exits
 {
     perror(("Error: "+msg).c_str());
     exit(EXIT_FAILURE);
 }
 
 
-bool Utils::isInteger(const string& str)
+bool Utils::isInteger(const string& str)    // checks if a string is an integer
 {
     string::const_iterator it = str.begin();
-    while (it != str.end() && std::isdigit(*it)) ++it;
+    while (it != str.end() && std::isdigit(*it))
+        ++it;
+
     return !str.empty() && it == str.end();
 }
 
 
-string Utils::inputString()
+string Utils::inputString()     // inputs a string from the console
 {
     string reps;
     cin >> reps;
@@ -24,7 +26,7 @@ string Utils::inputString()
     return reps;
 }
 
-int Utils::convertToInt(const string& str)
+int Utils::convertToInt(const string& str)  // converts a string to an integer
 {
     if (!isInteger(str))
         Utils::errorExit("Input is not an integer.");
@@ -32,7 +34,7 @@ int Utils::convertToInt(const string& str)
     return stoi(str);
 }
 
-list<string> * Utils::readDirectory(const string& dirPath)
+list<string> * Utils::readDirectory(const string& dirPath)  // reads and directory and stores all file names in a list
 {
     auto * files = new list<string>();
     DIR *dir;
@@ -52,7 +54,7 @@ list<string> * Utils::readDirectory(const string& dirPath)
     return files;
 }
 
-ifstream Utils::readFile(const string& file, const string& datatype, const string& reviewtype)
+ifstream Utils::openFile(const string& file, const string& datatype, const string& reviewtype)  // opens a file for reading
 {
     string fullPath = Utils::getCurrentPath();
     fullPath.append("/imdb/").append(datatype).append("/").append(reviewtype.substr(0,3)).append("/").append(file);
@@ -64,7 +66,7 @@ ifstream Utils::readFile(const string& file, const string& datatype, const strin
     return infile;
 }
 
-string Utils::getCurrentPath()
+string Utils::getCurrentPath()  // returns the path of the current directory
 {
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));

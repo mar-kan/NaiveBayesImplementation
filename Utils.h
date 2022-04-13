@@ -25,7 +25,7 @@ public:
     static string inputString();
     static int convertToInt(const string&);
     static list<std::string> * readDirectory(const string&);
-    static ifstream readFile(const string& file, const string& datatype, const string& reviewtype);
+    static ifstream openFile(const string& file, const string& datatype, const string& reviewtype);
     static string getCurrentPath();
 };
 

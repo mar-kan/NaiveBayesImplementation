@@ -2,27 +2,24 @@
 
 NaiveBayes::NaiveBayes(double smooth,int toCheck,int toSkip,int size)
 {
-    allWords = new WordList();
     posWords = new WordList();
     negWords = new WordList();
+    posWordCount = 0;
+    negWordCount = 0;
 
-    posWordCount=0;
-    negWordCount=0;
+    smoothingFactor = smooth;
+    wordsToCheck = toCheck;
+    wordsToSkip = toSkip;
+    trainSize = size;
 
-    smoothingFactor=smooth;
-    wordsToCheck=toCheck;
-    wordsToSkip=toSkip;
-    trainSize=size;
-
-    truePositives=0;
-    falsePositives=0;
-    trueNegatives=0;
-    falseNegatives=0;
+    truePositives = 0;
+    falsePositives = 0;
+    trueNegatives = 0;
+    falseNegatives = 0;
 }
 
 NaiveBayes::~NaiveBayes()
 {
-    delete allWords;
     delete posWords;
     delete negWords;
 }
@@ -38,15 +35,17 @@ void NaiveBayes::train()
     list<string> * posFiles = Utils::readDirectory(currPath+"/imdb/train/pos");
     list<string> * negFiles = Utils::readDirectory(currPath+"/imdb/train/neg");
 
-    int count=0, c=0;
+    /* reads all files of the two directories */
+    int count=0;
     for (const string& file : *posFiles)
     {
         if (count++ == trainSize)
-            break;
+            break;               // stops if the counter reaches the specified training size
 
-        ifstream infile = Utils::readFile(file, "train", "pos");
-
+        ifstream infile = Utils::openFile(file, "train", "pos");
         string word;
+
+        // reads every word of each file and classifies its words as positive
         while (infile >> word)
         {
             word = Preprocess::preprocess(word);
@@ -56,22 +55,17 @@ void NaiveBayes::train()
                 posWordCount++;
             }
         }
-        if (++c>1000)
-        {
-            cout<<"#";
-            c=0;
-        }
     }
-
     count=0;
     for (const string& file : *negFiles)
     {
         if (count++ == trainSize)
             break;
 
-        ifstream infile = Utils::readFile(file, "train", "neg");
-
+        ifstream infile = Utils::openFile(file, "train", "neg");
         string word;
+
+        // reads every word of each file and classifies its words as negative
         while (infile >> word)
         {
             word = Preprocess::preprocess(word);
@@ -81,15 +75,11 @@ void NaiveBayes::train()
                 negWordCount++;
             }
         }
-        if (++c>1000)
-        {
-            cout<<"#";
-            c=0;
-        }
     }
     posWords->sortByValue();
     negWords->sortByValue();
 
+    // cutting the <wordsToSkip> most common words and keeping from the rest only the <wordsToCheck> most common words
     posWords->cutWords(wordsToSkip,wordsToCheck);
     negWords->cutWords(wordsToSkip,wordsToCheck);
 
@@ -105,19 +95,21 @@ void NaiveBayes::evaluate(const string& datatype, const string& restype)
 
     list<string> * files = Utils::readDirectory("imdb/"+datatype+"/"+restype.substr(0,3));
     int badMovies=0, goodMovies=0;
-
     int count=0;
+
+    /* reads all files of the directory */
     for (const string& file : *files)
     {
         if (datatype=="train" && count++ == trainSize)
-            break;
+            break;           // stops only if the train set is used and the counter reaches the specified training size
 
         long double good = 1.0;
         long double bad = 1.0;
 
-        ifstream infile = Utils::readFile(file, datatype, restype);
+        ifstream infile = Utils::openFile(file, datatype, restype);
         if (!infile.is_open()) Utils::errorExit("File "+file+" cannot be opened");
 
+        /* reads file word by word */
         string word;
         while (infile >> word)
         {
@@ -129,10 +121,12 @@ void NaiveBayes::evaluate(const string& datatype, const string& restype)
             else
                 size=trainSize;
 
+            // calculates the probability of the word to belong to each class
             good *= (long double)(posWords->getWordCount(word)+smoothingFactor)/(size+smoothingFactor*posWords->getSize());
             bad *= (long double)(negWords->getWordCount(word)+smoothingFactor)/(size+smoothingFactor*negWords->getSize());
         }
 
+        /* classifies it in the class with the highest probability */
         if(good > bad)
         {
             goodMovies++;
@@ -160,13 +154,14 @@ void NaiveBayes::evaluate(const string& datatype, const string& restype)
 
 void NaiveBayes::resetValues()
 {
+    // resets all evaluation values
+
     truePositives = 0;
     falsePositives = 0;
     trueNegatives = 0;
     falseNegatives = 0;
 }
 
-/** setters & getters **/
 
 int NaiveBayes::getTruePositives() const {
     return truePositives;

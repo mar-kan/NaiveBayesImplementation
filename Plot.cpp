@@ -1,19 +1,44 @@
 #include "Plot.h"
 #include "Utils.h"
-#include "matplotlib-cpp-master/matplotlibcpp.h"
-namespace plt = matplotlibcpp;
 
 
-void Plot::plot(vector<double>* y, vector<double> * accuracyTrain)
+void Plot::plot(vector<double>* y, vector<double> * metric, const string& datasetType, const string& metricName)
 {
+    // plots figure using matplotlib for c++
     plt::figure_size(1200, 780);
-    plt::named_plot("accuracy", *accuracyTrain, *y, "bo");
+    plt::named_plot(metricName, *metric, *y, "bo");
 
-    plt::title("Accuracy of training data");
+    plt::title(metricName+" of "+datasetType+" data");
     plt::ylabel("training size");
-    plt::xlabel("accuracy");
-
+    plt::xlabel(metricName);
     plt::legend();
+
+    // saves figure
+    string filename = "./results/";
+    filename.append(metricName).append("_").append(datasetType).append(".png");
+    plt::save(filename);
+
     plt::show();
-    plt::save("./results/acc_train.png");
+}
+
+void Plot::plotAll(vector<double>* y, vector<double> * acc, vector<double> * prec, vector<double> * rec, vector<double> * f1, const string& datasetType)
+{
+    // plots figure using matplotlib for c++
+    plt::figure_size(1200, 780);
+    plt::named_plot("Accuracy", *acc, *y, "bo");
+    plt::named_plot("Precision", *prec, *y, "ro");
+    plt::named_plot("Recall", *rec, *y, "co");
+    plt::named_plot("F1 Score", *f1, *y, "yo");
+
+    plt::title("Metrics of "+datasetType+" data");
+    plt::ylabel("training size");
+    plt::xlabel("Metrics");
+    plt::legend();
+
+    // saves figure
+    string filename = "./results/";
+    filename.append("allMetrics").append("_").append(datasetType).append(".png");
+    plt::save(filename);
+
+    plt::show();
 }
