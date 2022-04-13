@@ -5,7 +5,7 @@
 
 
 class Metrics {
-    double * accuracy;
+    vector<double> * accuracy;
     vector<double> * precision;
     vector<double> * recall;
     vector<double> * f1;
@@ -21,7 +21,7 @@ public:
     double calculateF1(int rep);
     void print(int rep);
 
-    double *getAccuracy() const;
+    vector<double> *getAccuracy() const;
     vector<double> *getPrecision() const;
     vector<double> *getRecall() const;
     vector<double> *getF1() const;

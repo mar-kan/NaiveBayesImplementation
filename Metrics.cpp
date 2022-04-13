@@ -3,7 +3,7 @@
 
 Metrics::Metrics(int size)
 {
-    accuracy = new double[size];
+    accuracy = new vector<double>(size);
     precision = new vector<double>(size);
     recall = new vector<double>(size);
     f1 = new vector<double>(size);
@@ -11,7 +11,7 @@ Metrics::Metrics(int size)
 
 Metrics::~Metrics()
 {
-    delete[] accuracy;
+    delete accuracy;
     delete precision;
     delete recall;
     delete f1;
@@ -20,7 +20,7 @@ Metrics::~Metrics()
 
 void Metrics::calculateAllMetrics(NaiveBayes * nb, int rep)
 {
-    accuracy[rep] = calculateAccuracy(nb);
+    accuracy->at(rep) = calculateAccuracy(nb);
     precision->at(rep) = calculatePrecision(nb);
     recall->at(rep) = calculateRecall(nb);
     f1->at(rep) = calculateF1(rep);
@@ -28,7 +28,7 @@ void Metrics::calculateAllMetrics(NaiveBayes * nb, int rep)
 
 void Metrics::print(int rep)
 {
-    cout<<"\tAccuracy: "<<accuracy[rep]*100<<"%"<<endl<<"\tPrecision: "<<precision->at(rep)*100<<"%"<<endl<<"\tRecall: "<<recall->at(rep)*100<<"%"<<endl<<"\tF1-score: "<<f1->at(rep)*100<<"%"<<endl;
+    cout<<"\tAccuracy: "<<accuracy->at(rep)*100<<"%"<<endl<<"\tPrecision: "<<precision->at(rep)*100<<"%"<<endl<<"\tRecall: "<<recall->at(rep)*100<<"%"<<endl<<"\tF1-score: "<<f1->at(rep)*100<<"%"<<endl;
 }
 
 double Metrics::calculateAccuracy(NaiveBayes *nb)
@@ -51,7 +51,7 @@ double Metrics::calculateF1(int rep)
     return 2*(precision->at(rep) * recall->at(rep))/(precision->at(rep)+recall->at(rep));
 }
 
-double *Metrics::getAccuracy() const {
+vector<double> *Metrics::getAccuracy() const {
     return accuracy;
 }
 
