@@ -42,25 +42,9 @@ int main() {
         delete nb;
     }
 
-    if (repetitions > 1)
-    {
-        /** plotting the metrics for all the repetitions **/
-        Plot::plot(trainSizes, trainMetrics->getAccuracy(), "training", "Accuracy");
-        Plot::plot(trainSizes, trainMetrics->getPrecision(), "training", "Precision");
-        Plot::plot(trainSizes, trainMetrics->getRecall(), "training", "Recall");
-        Plot::plot(trainSizes, trainMetrics->getF1(), "training", "F1 Score");
-
-        Plot::plot(trainSizes, trainMetrics->getAccuracy(), "test", "Accuracy");
-        Plot::plot(trainSizes, trainMetrics->getPrecision(), "test", "Precision");
-        Plot::plot(trainSizes, trainMetrics->getRecall(), "test", "Recall");
-        Plot::plot(trainSizes, trainMetrics->getF1(), "test", "F1 Score");
-    }
-    else
-    {
-        /** plotting a graph for its set containing all metrics **/
-        Plot::plotAll(trainSizes, trainMetrics->getAccuracy(), trainMetrics->getPrecision(), trainMetrics->getRecall(), trainMetrics->getF1(), "training");
-        Plot::plotAll(trainSizes, testMetrics->getAccuracy(), testMetrics->getPrecision(), testMetrics->getRecall(), testMetrics->getF1(), "test");
-    }
+    /** plotting a graph for each set containing all the metrics **/
+    Plot::plot(trainSizes, trainMetrics->getAccuracy(), trainMetrics->getPrecision(), trainMetrics->getRecall(), trainMetrics->getF1(), "training");
+    Plot::plot(trainSizes, testMetrics->getAccuracy(), testMetrics->getPrecision(), testMetrics->getRecall(), testMetrics->getF1(), "test");
 
     delete trainMetrics;
     delete testMetrics;

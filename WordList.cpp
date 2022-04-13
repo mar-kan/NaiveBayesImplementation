@@ -10,7 +10,7 @@ WordList::~WordList()
     delete words;
 }
 
-void WordList::add(const string& word)
+void WordList::add(const string& word)  // adds a number to the map or increases its occurrences by 1
 {
     pair<int, string> p = search(word);
 
@@ -20,12 +20,12 @@ void WordList::add(const string& word)
         changeValue(word);
 }
 
-void WordList::add(int count, const string& word)
+void WordList::add(int count, const string& word)   // adds new pair to the list
 {
     words->insert(make_pair(count, word));
 }
 
-pair<int, string> WordList::search(const string& key)
+pair<int, string> WordList::search(const string& key)   // searches for a word in the map and returns its pair
 {
     for (auto & pair : *words)
     {
@@ -35,7 +35,7 @@ pair<int, string> WordList::search(const string& key)
     return make_pair(-1, "");
 }
 
-void WordList::changeValue(const string& key)
+void WordList::changeValue(const string& key)           // increments the number of occurrences of a word
 {
     for (auto it = words->begin(); it != words->end(); ++it)
     {
@@ -49,7 +49,7 @@ void WordList::changeValue(const string& key)
     }
 }
 
-int WordList::getWordCount(const string& word)
+int WordList::getWordCount(const string& word)           // returns the number of occurrences of a word
 {
     pair<int, string> p = search(word);
     if(p.first == -1)
@@ -65,10 +65,12 @@ void WordList::sortByValue()
 
 void WordList::cutWords(int skip, int check)
 {
+    // cuts <skip> words from the beginning
     auto it = words->begin();
     if (words->size() > skip)
         std::advance(it, skip-1);
 
+    // keeps <check> words and cuts all the rest from the end
     if (words->size() > check)
     {
         it = words->begin();

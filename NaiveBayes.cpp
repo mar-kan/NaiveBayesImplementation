@@ -154,8 +154,7 @@ void NaiveBayes::evaluate(const string& datatype, const string& restype)
 
 void NaiveBayes::resetValues()
 {
-    // resets all evaluation values
-
+    /* resets all evaluation values */
     truePositives = 0;
     falsePositives = 0;
     trueNegatives = 0;
