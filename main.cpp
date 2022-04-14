@@ -15,7 +15,7 @@ int main() {
         int size = Utils::convertToInt(Utils::inputString());
 
         auto * nb = new NaiveBayes(0.02, size*6, 5, size);
-        trainSizes->at(repetitions-1)=size;
+        trainSizes->at(i)=size;
 
         if (repetitions != 1)
             cout << "-----Iteration "<<i+1<<"-----"<<endl;
